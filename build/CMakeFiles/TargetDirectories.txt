@@ -1,0 +1,3 @@
+/Users/aayush/Documents/chip8/build/CMakeFiles/game.dir
+/Users/aayush/Documents/chip8/build/CMakeFiles/edit_cache.dir
+/Users/aayush/Documents/chip8/build/CMakeFiles/rebuild_cache.dir

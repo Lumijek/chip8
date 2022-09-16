@@ -67,7 +67,7 @@ int main() {
     	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     #endif
     
-    GLFWwindow * window = glfwCreateWindow(image_width, image_height, "Ray Tracer", NULL, NULL);
+    GLFWwindow * window = glfwCreateWindow(image_width, image_height, "CHIP 8", NULL, NULL);
     if (window == NULL) {
         printf("Failed to create GLFW window!\n");
         glfwTerminate();

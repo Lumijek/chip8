@@ -72,6 +72,9 @@ void execute(chip8 *c) {
 				uint8_t sprite_line = c->memory[c->I + i];
 				for(int j = 0; j < 8; j++) {
 					if(x + j == 64) break; // end of row
+					if(c->display[(y + i) * 64 + x + j] == 1 && ((sprite_line >> (7 - j)) & 1) == 1) {
+						c->registers[0xF] = 1;
+					}
 					c->display[(y + i) * 64 + x + j] ^= (sprite_line >> (7 - j)) & 1;
 				}
 			}
