@@ -1,9 +1,11 @@
 #include "chip8.h"
-
 #define FONT_START 0x050
 #define FONT_END 0x09F
 
 void setup_chip8(chip8 *c) {
+	struct timeval tm;
+    gettimeofday(&tm, NULL);
+    srandom(tm.tv_sec + tm.tv_usec * 1000000ul);
 	memset(c->memory, 0, sizeof(c->memory));
 	memset(c->display, 0, sizeof(c->display));
 	uint16_t fonts[80] = {
@@ -38,13 +40,33 @@ void execute(chip8 *c) {
 				memset(c->display, 0, sizeof(c->display));
 			}
 			else if((c->opcode & 0x00FF) == 0x00EE) {
-				c->pc = c->stack[c->sp];
-				c->sp--;
+				c->pc = c->stack[c->sp--];
 			}
 			break;
 		}
 		case 0x1000: {
 			c->pc = c->opcode & 0x0FFF;
+			break;
+		}
+		/*
+		case 0x2000: {
+			c->stack[++c->sp] = c->pc;
+			c->sp++;
+			c->pc = c->opcode & 0x0FFF;
+			break;
+
+		}
+		*/
+		case 0x3000: {
+			if(c->registers[c->opcode & 0x0F00] == (c->opcode & 0x00FF)) c->pc += 2;
+			break;
+		}
+		case 0x4000: {
+			if(c->registers[c->opcode & 0x0F00] != (c->opcode & 0x00FF)) c->pc += 2;
+			break;
+		}
+		case 0x5000: {
+			if(c->registers[c->opcode & 0x0F00] == c->registers[c->opcode & 0x00F0]) c->pc += 2;
 			break;
 		}
 		case 0x6000: {
@@ -57,11 +79,77 @@ void execute(chip8 *c) {
 			c->registers[Vx] += c->opcode & 0x00FF;
 			break;
 		}
+		case 0x8000: {
+			uint8_t x = (c->opcode & 0x0F00) >> 8;
+			uint8_t y = (c->opcode & 0x00F0) >> 4;
+			switch(c->opcode & 0x000F) {
+				case 0x0000: {
+					c->registers[x] = c->registers[y];
+					break;
+				}
+				case 0x0001: {
+					c->registers[x] |= c->registers[y];
+					break;
+				}
+				case 0x0002: {
+					c->registers[x] &= c->registers[y];
+					break;
+				}
+				case 0x0003: {
+					c->registers[x] ^= c->registers[y];
+					break;
+				}
+				case 0x0004: {
+					if(c->registers[x] + c->registers[y] > 255) {
+						c->registers[0xF] = 1;
+						c->registers[x] = (c->registers[x] + c->registers[y]) & 0xFF;
+						break;
+					};
+					c->registers[0xF] = 0;
+					c->registers[x] += c->registers[y];
+					break;
+				}
+				case 0x0005: {
+					c->registers[0xF] = 0;
+					if(c->registers[x] > c->registers[y]) c->registers[0xF] = 1;
+					c->registers[x] -= c->registers[y];
+					break;
+				}
+				case 0x0006: {
+					if((c->registers[x] & 1) == 1) c->registers[0xF] = 1;
+					c->registers[x] >>= 1;
+					break;
+				}
+				case 0x0007: {
+					c->registers[0xF] = 0;
+					if(c->registers[y] > c->registers[x]) c->registers[0xF] = 1;
+					c->registers[x] = c->registers[y] = c->registers[x];
+					break;
+				}
+				case 0x000E: {
+					c->registers[0xF] = c->registers[x] >> 7;
+					c->registers[x] <<= 1;
+					break;
+				}
+				break;
+			}
+		}
+		case 0x9000: {
+			if(c->registers[c->opcode & 0x0F00] != c->registers[c->opcode & 0x00F0]) c->pc += 2;
+			break;
+		}
 		case 0xA000: {
 			c->I = c->opcode & 0x0FFF;
 			break;
 		}
+		case 0xB000: {
+			c->pc = (c->opcode & 0x0FFF) + c->registers[0];
+		}
+		case 0xC000: {
+			int random_value = arc4random_uniform(256);
+			c->registers[c->opcode & 0x0F00 >> 8] = random_value & (c->opcode & 0x00FF);
 
+		}
 		case 0xD000: {
 			uint8_t x = c->registers[(c->opcode & 0x0F00) >> 8] % 64;
 			uint8_t y = c->registers[(c->opcode & 0x00F0) >> 4] % 32;
@@ -78,7 +166,10 @@ void execute(chip8 *c) {
 					c->display[(y + i) * 64 + x + j] ^= (sprite_line >> (7 - j)) & 1;
 				}
 			}
-
+			break;
+		}
+		case 0xE000: {
+			int c;
 		}
 	}
 }

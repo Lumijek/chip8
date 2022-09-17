@@ -131,9 +131,19 @@ int main() {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, checkImage);
     glGenerateMipmap(GL_TEXTURE_2D);
 
+
     useShader(s);
 
+
+    double dt;
+    double lastTime = glfwGetTime();
+
+    //glfwSwapInterval(0); // disable v-sync
+
     while (!glfwWindowShouldClose(window)) {
+        dt = glfwGetTime() - lastTime;
+        //printf("%f\n", 1.0 / dt);
+        lastTime = glfwGetTime();
     	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 

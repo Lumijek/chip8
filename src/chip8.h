@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdlib.h>
+#include <sys/time.h>
 
 typedef struct {
 	uint8_t memory[4096]; // Memory
