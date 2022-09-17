@@ -64,7 +64,7 @@ void execute(chip8 *c) {
 
 		case 0xD000: {
 			uint8_t x = c->registers[(c->opcode & 0x0F00) >> 8] % 64;
-			uint8_t y = c->registers[(c->opcode & 0x0F00) >> 4] % 32;
+			uint8_t y = c->registers[(c->opcode & 0x00F0) >> 4] % 32;
 			uint8_t n = c->opcode & 0x000F;
 			c->registers[0xF] = 0;
 			for(int i = 0; i < n; i++) {
