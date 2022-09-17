@@ -54,7 +54,7 @@ void load_rom(chip8* c8, const char *rom_filename) {
 int main() {
     chip8 c8;
     setup_chip8(&c8);
-    load_rom(&c8, "../ROMS/ibm");
+    load_rom(&c8, "../ROMS/bigtest");
 	// Image
 	int image_width = 64;
 	int image_height = 32;
@@ -138,7 +138,7 @@ int main() {
     double dt;
     double lastTime = glfwGetTime();
 
-    //glfwSwapInterval(0); // disable v-sync
+    glfwSwapInterval(0); // disable v-sync
 
     while (!glfwWindowShouldClose(window)) {
         dt = glfwGetTime() - lastTime;

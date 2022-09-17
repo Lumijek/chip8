@@ -17,11 +17,11 @@ typedef struct {
 	uint8_t sp; // Stack Pointer
 	uint8_t registers[16]; // Registers
 
-	char display[2048]; // 64 by 32 display
+	uint8_t display[2048]; // 64 by 32 display
 	uint8_t keypad[16]; // 16 key keypad
 
 	uint8_t delay_timer;
-	uint8_t sound_time;
+	uint8_t sound_timer;
 
 } chip8;
 

@@ -50,7 +50,7 @@ void execute(chip8 *c) {
 		}
 		/*
 		case 0x2000: {
-			c->stack[++c->sp] = c->pc;
+			c->stack[c->sp] = c->pc;
 			c->sp++;
 			c->pc = c->opcode & 0x0FFF;
 			break;
@@ -58,15 +58,15 @@ void execute(chip8 *c) {
 		}
 		*/
 		case 0x3000: {
-			if(c->registers[c->opcode & 0x0F00] == (c->opcode & 0x00FF)) c->pc += 2;
+			if(c->registers[(c->opcode & 0x0F00) >> 8] == (c->opcode & 0x00FF)) c->pc += 2;
 			break;
 		}
 		case 0x4000: {
-			if(c->registers[c->opcode & 0x0F00] != (c->opcode & 0x00FF)) c->pc += 2;
+			if(c->registers[(c->opcode & 0x0F00) >> 8] != (c->opcode & 0x00FF)) c->pc += 2;
 			break;
 		}
 		case 0x5000: {
-			if(c->registers[c->opcode & 0x0F00] == c->registers[c->opcode & 0x00F0]) c->pc += 2;
+			if(c->registers[(c->opcode & 0x0F00) >> 8] == c->registers[c->opcode & 0x00F0]) c->pc += 2;
 			break;
 		}
 		case 0x6000: {
@@ -135,7 +135,7 @@ void execute(chip8 *c) {
 			}
 		}
 		case 0x9000: {
-			if(c->registers[c->opcode & 0x0F00] != c->registers[c->opcode & 0x00F0]) c->pc += 2;
+			if(c->registers[(c->opcode & 0x0F00) >> 8] != c->registers[(c->opcode & 0x00F0) >> 4]) c->pc += 2;
 			break;
 		}
 		case 0xA000: {
@@ -169,7 +169,70 @@ void execute(chip8 *c) {
 			break;
 		}
 		case 0xE000: {
-			int c;
+			uint8_t key = c->opcode & 0x0F00 >> 8;
+			if((c->opcode & 0x00FF) == 0x009E) {
+				if(c->keypad[key] == 1) c->pc += 2;
+			}
+			if((c->opcode & 0x00FF) == 0x00A1) {
+				if(c->keypad[key] == 0) c->pc += 2;
+			}
+			break;
+		}
+		case 0xF000: {
+			uint8_t x = c->registers[(c->opcode & 0x0F00) >> 8];
+			switch(c->opcode & 0x00FF) {
+				case 0x0007: {
+					c->registers[x] = c->delay_timer;
+					break;
+				}
+				case 0x000A: {
+					for(int i = 0x0; i < 0xF; i++){
+						if(c->keypad[i] == 1) {
+							c->registers[x] = i;
+							break;
+						}
+					}
+				}
+				case 0x0015: {
+					c->delay_timer = c->registers[x];
+					break;
+				}
+				case 0x0018: {
+					c->sound_timer = c->registers[x];
+					break;
+				}
+				case 0x001E: {
+					c->I += c->registers[x];
+					break;
+				}
+				case 0x0029: {
+					c->I = FONT_START + (0x5 * c->registers[x]);
+					break;
+				}
+				case 0x0033: {
+					uint8_t number = c->registers[x];
+					printf("%d\n", number);
+					c->memory[c->I] = number / 100;
+					c->memory[c->I + 1] = (number / 10) % 10;
+					c->memory[c->I + 2] = number % 10;
+					printf("(%d, %d, %d)\n", c->memory[c->I], c->memory[c->I + 1], c->memory[c->I + 2]);
+					break;
+				}
+				case 0x0055: {
+					for(int i = 0; i <= x; i++) {
+						c->memory[c->I + i] = c->registers[i];
+					}
+					break;
+				}
+				case 0x0065: {
+					for(int i = 0; i <= x; i++) {
+						c->registers[i] = c->memory[c->I + i];
+					}
+					break;
+				}
+			}
 		}
 	}
 }
+
+
