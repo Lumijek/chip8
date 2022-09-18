@@ -135,8 +135,8 @@ void execute(chip8 *c) {
                     break;
                 }
                 case 0x0005: {
-                    c->registers[0xF] = 0;
-                    if(c->registers[x] > c->registers[y]) c->registers[0xF] = 1;
+                    c->registers[0xF] = 1;
+                    if(c->registers[y] > c->registers[x]) c->registers[0xF] = 0;
                     c->registers[x] -= c->registers[y];
                     c->pc += 2;
                     break;
@@ -148,9 +148,9 @@ void execute(chip8 *c) {
                     break;
                 }
                 case 0x0007: {
-                    c->registers[0xF] = 0;
-                    if(c->registers[y] > c->registers[x]) c->registers[0xF] = 1;
-                    c->registers[x] = c->registers[y] = c->registers[x];
+                    c->registers[0xF] = 1;
+                    if(c->registers[x] > c->registers[y]) c->registers[0xF] = 0;
+                    c->registers[x] = c->registers[y] - c->registers[x];
                     c->pc += 2;
                     break;
                 }
@@ -159,6 +159,9 @@ void execute(chip8 *c) {
                     c->registers[x] <<= 1;
                     c->pc += 2;
                     break;
+                }
+                default: {
+                    printf("Invalid opcode: %X\n", c->opcode);
                 }
                 break;
             }
@@ -189,15 +192,20 @@ void execute(chip8 *c) {
             uint8_t y = c->registers[(c->opcode & 0x00F0) >> 4] % 32;
             uint8_t n = c->opcode & 0x000F;
             c->registers[0xF] = 0;
+
+            uint8_t sprite_line, bit;
+            uint16_t index;
+
             for(int i = 0; i < n; i++) {
                 if(y + i == 32) break; // end of column
-                uint8_t sprite_line = c->memory[c->I + i];
+                sprite_line = c->memory[c->I + i];
                 for(int j = 0; j < 8; j++) {
                     if(x + j == 64) break; // end of row
-                    if(c->display[(y + i) * 64 + x + j] == 1 && ((sprite_line >> (7 - j)) & 1) == 1) {
-                        c->registers[0xF] = 1;
-                    }
-                    c->display[(y + i) * 64 + x + j] ^= (sprite_line >> (7 - j)) & 1;
+                    index = (y + i) * 64 + x + j;
+                    bit = (sprite_line >> (7 - j)) & 1;
+
+                    if(c->display[index] == 1 && bit == 1) c->registers[0xF] = 1;
+                    c->display[index] ^= bit;
                 }
             }
             c->pc += 2;
@@ -208,10 +216,12 @@ void execute(chip8 *c) {
             if((c->opcode & 0x00FF) == 0x009E) {
                 if(c->keypad[key] == 1) c->pc += 2;
                 c->pc += 2;
+                break;
             }
             if((c->opcode & 0x00FF) == 0x00A1) {
                 if(c->keypad[key] == 0) c->pc += 2;
                 c->pc += 2;
+                break;
             }
             break;
         }
@@ -232,8 +242,7 @@ void execute(chip8 *c) {
                             break;
                         }
                     }
-                    //c->pc += 2;
-                    return;
+                    break;
                 }
                 case 0x0015: {
                     c->delay_timer = c->registers[x];
