@@ -156,11 +156,10 @@ int main() {
         // CHIP 8 INSTRUCTIONS
         fetch_opcode(&c8);
         execute(&c8);
-
+        
         for(int i = 0; i < 16; i++) {
             c8.keypad[i] = glfwGetKey(window, keys[i]) == GLFW_PRESS;
         }
-        
         for(int i = 0; i < image_height;i++) {
             for(int j = 0; j < image_width; j++) {
                 if(c8.display[i * image_width + j]) {
