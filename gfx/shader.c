@@ -1,5 +1,6 @@
 #include "shader.h"
 
+
 void detectGLShaderError(char *name, unsigned int shader) {
     int success;
     char infoLog[512];
@@ -10,12 +11,12 @@ void detectGLShaderError(char *name, unsigned int shader) {
     }
 }
 void create_shader(shader *s, char *vertexFile, char *fragmentFile) {
-	char* vertexShaderSource;
-	char* fragmentShaderSource;
-	copy_file(&vertexShaderSource, vertexFile);
-	copy_file(&fragmentShaderSource, fragmentFile);
+    char* vertexShaderSource;
+    char* fragmentShaderSource;
+    copy_file(&vertexShaderSource, vertexFile);
+    copy_file(&fragmentShaderSource, fragmentFile);
 
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, (const char *const *)&vertexShaderSource, NULL);
     glCompileShader(vertexShader);
     detectGLShaderError("vertex", vertexShader);

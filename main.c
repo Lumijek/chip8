@@ -7,6 +7,7 @@
 #include "gfx/shader.h"
 #include "src/chip8.h"
 
+
 void ErrorCallback(int i,
     const char * err_str) {
     printf("GLFW Error: %s\n", err_str);
@@ -18,18 +19,18 @@ void framebuffer_size_callback(GLFWwindow * window, int width, int height) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	static bool wireframe = false;
+    static bool wireframe = false;
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
-    	if(!wireframe) {
-    		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    	}
-    	else {
-    		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    	}
-    	wireframe = !wireframe;
+        if(!wireframe) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        wireframe = !wireframe;
     }
 }
 void load_rom(chip8* c8, const char *rom_filename) {
@@ -55,16 +56,16 @@ int main() {
     chip8 c8;
     setup_chip8(&c8);
     load_rom(&c8, "../ROMS/bigtest");
-	// Image
-	int image_width = 64;
-	int image_height = 32;
+    // Image
+    int image_width = 64;
+    int image_height = 32;
     glfwSetErrorCallback(ErrorCallback);
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     #ifdef __APPLE__
-    	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     #endif
     
     GLFWwindow * window = glfwCreateWindow(image_width, image_height, "CHIP 8", NULL, NULL);
@@ -79,19 +80,19 @@ int main() {
         return -1;
     }
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, key_callback);
 
-	float vertices[] = {
+    float vertices[] = {
      1.0f,  1.0f, 0.0f, 1.0f, 1.0f,  // top right
      1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
     -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // bottom left
     -1.0f,  1.0f, 0.0f, 0.0f, 1.0f   // top left
-	};
+    };
     unsigned int indices[] = {
-	    0, 1, 3,
+        0, 1, 3,
         1, 2, 3
-	};
-	shader *s = malloc(sizeof(shader));
+    };
+    shader *s = malloc(sizeof(shader));
     char *vertexShaderFile = "../shaders/shader.vs";
     char *fragmentShaderFile = "../shaders/shader.fs";
     create_shader(s, vertexShaderFile, fragmentShaderFile);
@@ -144,7 +145,7 @@ int main() {
         dt = glfwGetTime() - lastTime;
         //printf("%f\n", 1.0 / dt);
         lastTime = glfwGetTime();
-    	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // CHIP 8 INSTRUCTIONS
@@ -170,7 +171,7 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, texture);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		glfwSwapBuffers(window);
+        glfwSwapBuffers(window);
         glfwPollEvents();
     };
     glfwTerminate();

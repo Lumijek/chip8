@@ -8,20 +8,20 @@
 #include <sys/time.h>
 
 typedef struct {
-	uint8_t memory[4096]; // Memory
-	uint16_t pc; // Program counter
-	uint16_t opcode; // Opcode
-	uint16_t I; // Index Register
+    uint8_t memory[4096]; // Memory
+    uint16_t pc; // Program counter
+    uint16_t opcode; // Opcode
+    uint16_t I; // Index Register
 
-	uint16_t stack[16]; // Stack
-	uint8_t sp; // Stack Pointer
-	uint8_t registers[16]; // Registers
+    uint16_t stack[16]; // Stack
+    uint8_t sp; // Stack Pointer
+    uint8_t registers[16]; // Registers
 
-	uint8_t display[2048]; // 64 by 32 display
-	uint8_t keypad[16]; // 16 key keypad
+    uint8_t display[2048]; // 64 by 32 display
+    uint8_t keypad[16]; // 16 key keypad
 
-	uint8_t delay_timer;
-	uint8_t sound_timer;
+    uint8_t delay_timer; // System delay timer
+    uint8_t sound_timer; // System sound timer
 
 } chip8;
 

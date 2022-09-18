@@ -8,8 +8,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+
 typedef struct {
-	unsigned int id;
+    unsigned int id;
 } shader;
 
 void detectGLShaderError(char*, unsigned int);
