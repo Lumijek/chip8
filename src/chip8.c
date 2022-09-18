@@ -129,14 +129,8 @@ void execute(chip8 *c) {
                     break;
                 }
                 case 0x0004: {
-                    if(c->registers[x] + c->registers[y] > 255) {
-                        c->registers[0xF] = 1;
-                        c->registers[x] = (c->registers[x] + c->registers[y]) & 0xFF;
-                        c->pc += 2;
-                        break;
-                    };
-                    c->registers[0xF] = 0;
                     c->registers[x] += c->registers[y];
+                    c->registers[0xF] = c->registers[x] + c->registers[y] > 0xFF;
                     c->pc += 2;
                     break;
                 }
