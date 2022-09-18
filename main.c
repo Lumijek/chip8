@@ -60,7 +60,7 @@ void load_rom(chip8* c8, const char *rom_filename) {
 int main() {
     chip8 c8;
     setup_chip8(&c8);
-    load_rom(&c8, "../ROMS/ibm");
+    load_rom(&c8, "../ROMS/testrom");
     // Image
     int image_width = 64;
     int image_height = 32;
@@ -160,6 +160,8 @@ int main() {
         for(int i = 0; i < 16; i++) {
             c8.keypad[i] = glfwGetKey(window, keys[i]) == GLFW_PRESS;
         }
+
+        // CHANGE PIXEL BUFFER ACCORDINGLY
         for(int i = 0; i < image_height;i++) {
             for(int j = 0; j < image_width; j++) {
                 if(c8.display[i * image_width + j]) {

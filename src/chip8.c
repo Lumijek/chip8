@@ -221,6 +221,7 @@ void execute(chip8 *c) {
             break;
         }
         case 0xF000: {
+
             uint8_t x = c->registers[(c->opcode & 0x0F00) >> 8];
             switch(c->opcode & 0x00FF) {
                 case 0x0007: {
@@ -236,8 +237,8 @@ void execute(chip8 *c) {
                             break;
                         }
                     }
-                    c->pc += 2;
-                    break;
+                    //c->pc += 2;
+                    return;
                 }
                 case 0x0015: {
                     c->delay_timer = c->registers[x];
