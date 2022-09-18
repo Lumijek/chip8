@@ -60,7 +60,7 @@ void load_rom(chip8* c8, const char *rom_filename) {
 int main() {
     chip8 c8;
     setup_chip8(&c8);
-    load_rom(&c8, "../ROMS/bigtest");
+    load_rom(&c8, "../ROMS/ibm");
     // Image
     int image_width = 64;
     int image_height = 32;
