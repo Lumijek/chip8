@@ -144,7 +144,7 @@ int main() {
     double dt;
     double lastTime = glfwGetTime();
 
-    glfwSwapInterval(0); // disable v-sync
+    //glfwSwapInterval(0); // disable v-sync
 
     while (!glfwWindowShouldClose(window)) {
         dt = glfwGetTime() - lastTime;

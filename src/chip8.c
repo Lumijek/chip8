@@ -52,6 +52,7 @@ void fetch_opcode(chip8 *c) {
     c->opcode = c->memory[c->pc] << 8 | c->memory[c->pc + 1];
 }
 void execute(chip8 *c) {
+    printf("%X, %d\n", c->opcode, c->pc);
     switch(c->opcode & 0xF000) {
         case 0x0000: {
             if((c->opcode & 0x00FF) == 0x00E0) {
@@ -87,7 +88,7 @@ void execute(chip8 *c) {
             break;
         }
         case 0x5000: {
-            if(c->registers[(c->opcode & 0x0F00) >> 8] == c->registers[c->opcode & 0x00F0]) c->pc += 2;
+            if(c->registers[(c->opcode & 0x0F00) >> 8] == c->registers[(c->opcode & 0x00F0) >> 4]) c->pc += 2;
             c->pc += 2;
             break;
         }
