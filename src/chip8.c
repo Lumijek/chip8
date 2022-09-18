@@ -144,10 +144,12 @@ void execute(chip8 *c) {
 		}
 		case 0xB000: {
 			c->pc = (c->opcode & 0x0FFF) + c->registers[0];
+			break;
 		}
 		case 0xC000: {
 			int random_value = arc4random_uniform(256);
-			c->registers[c->opcode & 0x0F00 >> 8] = random_value & (c->opcode & 0x00FF);
+			c->registers[(c->opcode & 0x0F00) >> 8] = random_value & (c->opcode & 0x00FF);
+			break;
 
 		}
 		case 0xD000: {
@@ -169,7 +171,7 @@ void execute(chip8 *c) {
 			break;
 		}
 		case 0xE000: {
-			uint8_t key = c->opcode & 0x0F00 >> 8;
+			uint8_t key = (c->opcode & 0x0F00) >> 8;
 			if((c->opcode & 0x00FF) == 0x009E) {
 				if(c->keypad[key] == 1) c->pc += 2;
 			}
@@ -211,11 +213,9 @@ void execute(chip8 *c) {
 				}
 				case 0x0033: {
 					uint8_t number = c->registers[x];
-					printf("%d\n", number);
 					c->memory[c->I] = number / 100;
 					c->memory[c->I + 1] = (number / 10) % 10;
 					c->memory[c->I + 2] = number % 10;
-					printf("(%d, %d, %d)\n", c->memory[c->I], c->memory[c->I + 1], c->memory[c->I + 2]);
 					break;
 				}
 				case 0x0055: {
@@ -231,6 +231,10 @@ void execute(chip8 *c) {
 					break;
 				}
 			}
+		break;
+		}
+		default: {
+			printf("%X is not a valid opcode! \n", c->opcode);
 		}
 	}
 }
