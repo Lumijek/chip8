@@ -7,7 +7,12 @@
 #include "gfx/shader.h"
 #include "src/chip8.h"
 
-
+uint8_t keys[16] = {
+    GLFW_KEY_1, GLFW_KEY_2, GLFW_KEY_3, GLFW_KEY_4,
+    GLFW_KEY_Q, GLFW_KEY_W, GLFW_KEY_E, GLFW_KEY_R,
+    GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_F,
+    GLFW_KEY_Z, GLFW_KEY_X, GLFW_KEY_C, GLFW_KEY_V
+};
 void ErrorCallback(int i,
     const char * err_str) {
     printf("GLFW Error: %s\n", err_str);
@@ -150,6 +155,14 @@ int main() {
 
         // CHIP 8 INSTRUCTIONS
         fetch_opcode(&c8);
+        for(int i = 0; i < 16; i++) {
+            c8.keypad[i] = glfwGetKey(window, keys[i]) == GLFW_PRESS;
+        }
+        for(int i = 0; i < 16; i++) {
+            if(c8.keypad[i]) {
+                printf("%d\n", i);
+            }
+        }
         execute(&c8);
         
         for(int i = 0; i < image_height;i++) {

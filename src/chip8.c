@@ -41,7 +41,7 @@ void execute(chip8 *c) {
                 memset(c->display, 0, sizeof(c->display));
             }
             else if((c->opcode & 0x00FF) == 0x00EE) {
-                c->pc = c->stack[c->sp--];
+                c->pc = c->stack[--c->sp];
             }
             break;
         }
@@ -51,8 +51,8 @@ void execute(chip8 *c) {
         }
         /*
         case 0x2000: {
-            c->stack[c->sp] = c->pc;
             c->sp++;
+            c->stack[c->sp] = c->pc;
             c->pc = c->opcode & 0x0FFF;
             break;
 
