@@ -298,6 +298,8 @@ void execute(chip8 *c) {
             printf("%X is not a valid opcode! \n", c->opcode);
         }
     }
+    if(c->delay_timer > 0) c->delay_timer--;
+    if(c->sound_timer > 0) c->sound_timer--;
 }
 
 
