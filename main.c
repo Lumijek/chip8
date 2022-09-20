@@ -60,7 +60,7 @@ void load_rom(chip8* c8, const char *rom_filename) {
 int main() {
     chip8 c8;
     setup_chip8(&c8);
-    load_rom(&c8, "../ROMS/bigtest");
+    load_rom(&c8, "../ROMS/testrom");
     // Image
     int image_width = 64;
     int image_height = 32;
@@ -73,7 +73,7 @@ int main() {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     #endif
     
-    GLFWwindow * window = glfwCreateWindow(image_width, image_height, "CHIP 8", NULL, NULL);
+    GLFWwindow * window = glfwCreateWindow(image_width * 10, image_height * 10, "CHIP 8", NULL, NULL);
     if (window == NULL) {
         printf("Failed to create GLFW window!\n");
         glfwTerminate();
@@ -136,6 +136,7 @@ int main() {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, checkImage);
     glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 
     useShader(s);
@@ -144,7 +145,7 @@ int main() {
     double dt;
     double lastTime = glfwGetTime();
 
-    //glfwSwapInterval(0); // disable v-sync
+    glfwSwapInterval(0); // disable v-sync
 
     while (!glfwWindowShouldClose(window)) {
         dt = glfwGetTime() - lastTime;
@@ -161,15 +162,14 @@ int main() {
             c8.keypad[i] = glfwGetKey(window, keys[i]) == GLFW_PRESS;
         }
 
-        // CHANGE PIXEL BUFFER ACCORDINGLY
+        // CHANGE PIXEL BUFFER
         for(int i = 0; i < image_height;i++) {
             for(int j = 0; j < image_width; j++) {
-                if(c8.display[i * image_width + j]) {
-                    int ind = (i * image_width + j) * 3;
-                    checkImage[ind++] = 255;
-                    checkImage[ind++] = 255;
-                    checkImage[ind++] = 255;
-                }
+                int ind = (i * image_width + j) * 3;
+                uint8_t display_color = 255 * c8.display[i * image_width + j];
+                checkImage[ind++] = display_color;
+                checkImage[ind++] = display_color;
+                checkImage[ind++] = display_color;
             }
         }
         

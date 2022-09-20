@@ -14,6 +14,8 @@ void setup_chip8(chip8 *c) {
     memset(c->memory, 0, sizeof(c->memory));
     memset(c->display, 0, sizeof(c->display));
     memset(c->keypad, 0, sizeof(c->keypad));
+    memset(c->stack, 0, sizeof(c->stack));
+    memset(c->registers, 0, sizeof(c->registers));
 
     // LOAD FONT 
     uint16_t fonts[80] = {
@@ -52,7 +54,6 @@ void fetch_opcode(chip8 *c) {
     c->opcode = c->memory[c->pc] << 8 | c->memory[c->pc + 1];
 }
 void execute(chip8 *c) {
-    printf("%X, %d\n", c->opcode, c->pc);
     switch(c->opcode & 0xF000) {
         case 0x0000: {
             if((c->opcode & 0x00FF) == 0x00E0) {
@@ -163,8 +164,8 @@ void execute(chip8 *c) {
                 default: {
                     printf("Invalid opcode: %X\n", c->opcode);
                 }
-                break;
             }
+            break;
         }
         case 0x9000: {
             if(c->registers[(c->opcode & 0x0F00) >> 8] != c->registers[(c->opcode & 0x00F0) >> 4]) c->pc += 2;
@@ -227,7 +228,7 @@ void execute(chip8 *c) {
         }
         case 0xF000: {
 
-            uint8_t x = c->registers[(c->opcode & 0x0F00) >> 8];
+            uint8_t x = (c->opcode & 0x0F00) >> 8;
             switch(c->opcode & 0x00FF) {
                 case 0x0007: {
                     c->registers[x] = c->delay_timer;
@@ -278,6 +279,7 @@ void execute(chip8 *c) {
                     for(int i = 0; i <= x; i++) {
                         c->memory[c->I + i] = c->registers[i];
                     }
+                    //c->I += x + 1;
                     c->pc += 2;
                     break;
                 }
@@ -285,6 +287,7 @@ void execute(chip8 *c) {
                     for(int i = 0; i <= x; i++) {
                         c->registers[i] = c->memory[c->I + i];
                     }
+                    //c->I += x + 1;
                     c->pc += 2;
                     break;
                 }
