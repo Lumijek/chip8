@@ -213,7 +213,7 @@ void execute(chip8 *c) {
             break;
         }
         case 0xE000: {
-            uint8_t key = (c->opcode & 0x0F00) >> 8;
+            uint8_t key = c->registers[(c->opcode & 0x0F00) >> 8];
             if((c->opcode & 0x00FF) == 0x009E) {
                 if(c->keypad[key] == 1) c->pc += 2;
                 c->pc += 2;
